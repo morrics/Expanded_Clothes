@@ -200,12 +200,15 @@ namespace Expanded_Clothes
                 StateDirty.SetText(dirty.infoJacket);
                 return;
             }
-            if (hitObj == ClothesManager.Instance.coverallItem)
+            else if (hitObj == ClothesManager.Instance.coverallItem)
             {
                 StateDirty.SetText(dirty.infoCoverall);
                 return;
             }
-            StateDirty.ClearText();
+            else
+            {
+                StateDirty.ClearText();
+            }
 
             if (hitObj.transform.IsChildOf(doorMesh.transform))
             {
@@ -634,22 +637,19 @@ namespace Expanded_Clothes
 
             if (powderOpen)
             {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    TogglePowderTray();
+                    return;
+                }
+
                 if (TryGetPowderInHand(out Powder powder))
                 {
-                    if (powderLoaded >= 100)
-                    {
-                        interact.Value = "TRAY FULL";
-                        if (Input.GetMouseButtonDown(0)) TogglePowderTray();
-                        return;
-                    }
+                    if (powderLoaded >= 100) { interact.Value = "TRAY FULL"; return; }
+                    if (powder.gram <= 0) { interact.Value = "EMPTY PACKAGE"; return; }
 
-                    if (powder.gram <= 0)
-                    {
-                        interact.Value = "EMPTY PACKAGE";
-                        return;
-                    }
+                    interact.Value = "POUR WASHING POWDER (F)";
 
-                    interact.Value = "POUR WASHING POWDER";
                     if (Input.GetKeyDown(KeyCode.F))
                     {
                         int transferAmount = Mathf.Min(100, powder.gram);
@@ -661,15 +661,14 @@ namespace Expanded_Clothes
                     return;
                 }
 
-                interact.Value = (powderLoaded > 0) ? "POWDER LOADED" : "CLOSE POWDER TRAY";
-
-                if (Input.GetMouseButtonDown(0)) TogglePowderTray();
+                interact.Value = "CLOSE POWDER TRAY";
                 return;
             }
 
             interact.Value = "OPEN POWDER TRAY";
             if (Input.GetMouseButtonDown(0)) TogglePowderTray();
         }
+
 
         private void HandleClothesInteraction()
         {
@@ -810,10 +809,17 @@ namespace Expanded_Clothes
 
         private bool TryGetPowderInHand(out Powder powder)
         {
+            powder = null;
+
+            if (itemPivot.childCount == 0)
+                return false;
+
             var handItem = itemPivot.GetChild(0).gameObject;
             powder = handItem.GetComponent<Powder>();
-            return true;
+
+            return powder != null;
         }
+
 #endif
     }
 }
