@@ -43,9 +43,14 @@ API.Register see in [Futufon.cs](Futufon.cs)
 
 ## Credits
 <b>Huge thanks</b>
+
 <b>honeycomb936</b>: idea with mod, help with code
+
 <b>DUBOVYK</b>: high-quality hand textures
+
 <b>traxr</b>: high-quality clothes
+
 <b>cinnerax</b>: high-quality 3d-models
+
 ## Resources used
 <b>Script from HowMuchIsLeft</b>: for cloth status <i>[ItemContentDescription.cs](https://github.com/thurbridi/MSC-HowMuchIsLeft/blob/master/HowMuchIsLeft/ItemContentDescription.cs)</i> used in [StateDirty.cs](Open%20Source/StateDirty.cs)
