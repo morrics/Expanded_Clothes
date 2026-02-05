@@ -166,14 +166,14 @@ namespace Expanded_Clothes
             if (File.Exists(ModLoader.GetModAssetsFolder(this) + "/clothes/jacket.png"))
             {
                 jttexture = LoadAssets.LoadTexture(this, "clothes/jacket.png");
-                GameObject.Find("ExpandedClothes_Root/CLOTHES").transform.GetChild(0).GetComponent<MeshRenderer>().material.SetTexture("_MainTex", jttexture);
-                GameObject.Find("ExpandedClothes_CoatRack/CLOTHES").transform.GetChild(0).GetComponent<MeshRenderer>().material.SetTexture("_MainTex", jttexture);
+                Shelf.transform.Find("CLOTHES").transform.GetChild(0).GetComponent<MeshRenderer>().material.SetTexture("_MainTex", jttexture);
+                CoatRack.transform.Find("CLOTHES").transform.GetChild(0).GetComponent<MeshRenderer>().material.SetTexture("_MainTex", jttexture);
             }
             if (File.Exists(ModLoader.GetModAssetsFolder(this) + "/clothes/coverall.png"))
             {
                 cvtexture = LoadAssets.LoadTexture(this, "clothes/coverall.png");
-                GameObject.Find("ExpandedClothes_Root/CLOTHES").transform.GetChild(1).GetComponent<MeshRenderer>().material.SetTexture("_MainTex", cvtexture);
-                GameObject.Find("ExpandedClothes_CoatRack/CLOTHES").transform.GetChild(1).GetComponent<MeshRenderer>().material.SetTexture("_MainTex", cvtexture);
+                Shelf.transform.Find("CLOTHES").transform.GetChild(1).GetComponent<MeshRenderer>().material.SetTexture("_MainTex", cvtexture);
+                CoatRack.transform.Find("CLOTHES").transform.GetChild(1).GetComponent<MeshRenderer>().material.SetTexture("_MainTex", cvtexture);
             }
 
             ab.Unload(false);
