@@ -14,7 +14,7 @@ namespace Expanded_Clothes
         public override string ID => "Expanded_Clothes";
         public override string Name => "Expanded Clothes";
         public override string Author => "Morri";
-        public override string Version => "0.3.2"; //public 0.3.1
+        public override string Version => "0.3.3"; //public 0.3.3
         public override string Description => "Small tweaks for improved logic clothes (Beta)";
 
         SettingsText text;
