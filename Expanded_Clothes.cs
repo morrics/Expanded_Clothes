@@ -345,7 +345,7 @@ namespace Expanded_Clothes
                 {
                     int gram = item.GetComponent<Powder>().gram;
                     int max = 400;
-                    HowMuchIsLeftAPI.GenerateText(gram, max, "gram", true);
+                    HowMuchIsLeftAPI.GenerateText(gram, max, "gram", false);
                 });
             }    
         }
