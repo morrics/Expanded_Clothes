@@ -14,7 +14,7 @@ namespace Expanded_Clothes
         public override string ID => "Expanded_Clothes";
         public override string Name => "Expanded Clothes";
         public override string Author => "Morri";
-        public override string Version => "0.3.0"; //public 0.2.5
+        public override string Version => "0.3.1"; //public 0.3.1
         public override string Description => "Small tweaks for improved logic clothes (Beta)";
 
         SettingsText text;
@@ -25,8 +25,9 @@ namespace Expanded_Clothes
         public SettingsCheckBox ClothesHands;
         public SettingsCheckBox DirtyСlothes;
 
-        public static SettingsCheckBox Logs;
+        
 
+        public static SettingsCheckBox Logs;
         public static Expanded_Clothes Instance;
 
         public SettingsCheckBox sHouse;
@@ -138,6 +139,7 @@ namespace Expanded_Clothes
         private void USS_NEXUS() => Process.Start("https://www.nexusmods.com/mywintercar/mods/796");
         private void HMIL_NEXUS() => Process.Start("https://www.nexusmods.com/mywintercar/mods/724");
         private void GITHUB_REPO() => Process.Start("https://github.com/morrics/Expanded_Clothes");
+
         private void Mod_OnMenu()
         {
             s_locs_vis();
@@ -333,22 +335,47 @@ namespace Expanded_Clothes
         {
             if (ModLoader.IsReferencePresent("UniversalShoppingSystem") && DirtyСlothes.GetValue())
             {
-                new StateDirty();
-                psell.GetComponent<ItemShop>().LoadShop(Instance);
-                if (NewGame != true)
-                    Load();
+                USSAPI();
+            }
+            
+            var USS_NEED = SaveLoad.ValueExists(Instance, "USS_NEED") && SaveLoad.ReadValue<bool>(Instance, "USS_NEED");
+
+            if (USS_NEED == false && !USS)
+            {
+                string format;
+                string title;
+                title = "EXPANDED CLOTHES: DIRTINESS SYSTEM";
+                format = "With the recent update, a new system has been added to the game\n\nFor it to work, you need <b><color=yellow>Universal Shopping System</color></b>\nIf you do not need this system, you can ignore the notification.\nit will appear only once";
+                ModUI.ShowCustomMessage(format, title, new MsgBoxBtn[2]
+                {
+                ModUI.CreateMessageBoxBtn("OK"),
+                ModUI.CreateMessageBoxBtn("GO TO NEXUSMODS", USS_NEXUS)
+                }, new MsgBoxBtn[0]);
+                SaveLoad.WriteValue(Instance, "USS_NEED", true);
             }
 
             if (ModLoader.IsModPresent("HowMuchIsLeft") && DirtyСlothes.GetValue())
             {
-                HowMuchIsLeftAPI.RegisterItem("washing powder(Clone)", (item) =>
-                {
-                    int gram = item.GetComponent<Powder>().gram;
-                    int max = 400;
-                    HowMuchIsLeftAPI.GenerateText(gram, max, "gram", false);
-                });
+                HMILAPI();
             }    
         }
+        private void USSAPI()
+        {
+            new StateDirty();
+            psell.GetComponent<ItemShop>().LoadShop(Instance);
+            if (NewGame != true)
+                Load();
+        }
+        private void HMILAPI()
+        {
+            HowMuchIsLeftAPI.RegisterItem("washing powder(Clone)", (item) =>
+            {
+                int gram = item.GetComponent<Powder>().gram;
+                int max = 400;
+                HowMuchIsLeftAPI.GenerateText(gram, max, "gram", false);
+            });
+        }
+
         public void SaveAllWashers()
         {
             var allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
@@ -363,7 +390,7 @@ namespace Expanded_Clothes
                 {
                     washer.Save();
                 }
-                catch (System.Exception e)
+                catch (System.Exception)
                 {
                     return;
                 }
@@ -378,10 +405,15 @@ namespace Expanded_Clothes
 
             if (ModLoader.IsReferencePresent("UniversalShoppingSystem") && DirtyСlothes.GetValue())
             {
-                psell.GetComponent<ItemShop>().SaveShop(Instance);
-                Save();
-                SaveAllWashers();
+                USS_SAVE();
             }
+        }
+
+        private void USS_SAVE()
+        {
+            psell.GetComponent<ItemShop>().SaveShop(Instance);
+            Save();
+            SaveAllWashers();
         }
 
         private void ActivateItems()
