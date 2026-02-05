@@ -692,6 +692,7 @@ namespace Expanded_Clothes
 
             if (clothesStack.Count > 0 && itemPivot.childCount == 0)
             {
+                guiuse.Value = true;
                 interact.Value = "TAKE CLOTHES";
                 if (Input.GetMouseButtonDown(0))
                     TakeLastClothes();
