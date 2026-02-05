@@ -30,11 +30,11 @@ private void Mod_OnLoad()
       if (ModLoader.IsModPresent("Expanded_Clothes"))
       {
           // create shelf
-          Expanded_Clothes.API.Shelf("Country_Garage", new Vector3(-1132.719f, 2.55f, 1270.121f), new Vector3(270f, 250f, 0f));
+          Expanded_Clothes.API.Shelf("YOURMODID", new Vector3(0f, 0f, 0f), new Vector3(270f, 0f, 0f));
           // create coat rack with random hats (boolean true)
-          Expanded_Clothes.API.CoatRack("PUB", new Vector3(-1543.4f, 4.23f, 1185.4f), new Vector3(0f, 285f, 0f), true);
+          Expanded_Clothes.API.CoatRack("YOURMODID", new Vector3(0f, 0f, 04f), new Vector3(0f, 0f, 0f), true);
           // create washer
-          Expanded_Clothes.API.Washer("House", new Vector3(-13.4f, 0f, 3.85f), new Vector3(0f, 0f, 0f));
+          Expanded_Clothes.API.Washer("YOURMODID", new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, 0f));
       }
 }
 ```
