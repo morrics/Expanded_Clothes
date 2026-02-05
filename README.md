@@ -3,6 +3,9 @@ A mod for My Winter Car, Small tweaks for improved logic clothes
 
 <i>I was embarrassed to post the source code because it consists of vibecode, but this moment had to come</i>
 
+[![Expanded Clothes — NexusMods](https://raw.githubusercontent.com/morrics/Assets/refs/heads/main/MWC_page.png)](https://www.nexusmods.com/mywintercar/mods/532)
+
+
 ## Resources used
 - [MSCLoader](https://github.com/piotrulos/MSCModLoader/releases)
 - [Universal Shopping System](https://www.nexusmods.com/mywintercar/mods/796)
