@@ -32,13 +32,19 @@ private void Mod_OnLoad()
 {
       if (ModLoader.IsModPresent("Expanded_Clothes"))
       {
-          // create shelf
-          Expanded_Clothes.API.Shelf("YOURMODID", new Vector3(0f, 0f, 0f), new Vector3(270f, 0f, 0f));
-          // create coat rack with random hats (boolean true)
-          Expanded_Clothes.API.CoatRack("YOURMODID", new Vector3(0f, 0f, 04f), new Vector3(0f, 0f, 0f), true);
-          // create washer
-          Expanded_Clothes.API.Washer("YOURMODID", new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, 0f));
+            // Use handlers so that if the player does not modify anything, there will be no errors in the console (DO NOT MAKE YOUR MOD DEPENDENT ON MINE IF IT IS NOT NECESSARY)
+            EX_Load();
       }
+}
+
+private void EX_Load()
+{
+    // create shelf
+    Expanded_Clothes.API.Shelf("YOURMODID", new Vector3(0f, 0f, 0f), new Vector3(270f, 0f, 0f));
+    // create coat rack with random hats (boolean true)
+    Expanded_Clothes.API.CoatRack("YOURMODID", new Vector3(0f, 0f, 04f), new Vector3(0f, 0f, 0f), true);
+    // create washer
+    Expanded_Clothes.API.Washer("YOURMODID", new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, 0f));
 }
 ```
 
