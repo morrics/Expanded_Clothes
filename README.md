@@ -41,12 +41,13 @@ private void Mod_OnLoad()
 
 private void EX_Load()
 {
+    // USE OWN MODID
     // create shelf
-    Expanded_Clothes.API.Shelf("YOURMODID", new Vector3(0f, 0f, 0f), new Vector3(270f, 0f, 0f));
+    Expanded_Clothes.API.Shelf("MODID", new Vector3(0f, 0f, 0f), new Vector3(270f, 0f, 0f));
     // create coat rack with random hats (boolean true)
-    Expanded_Clothes.API.CoatRack("YOURMODID", new Vector3(0f, 0f, 04f), new Vector3(0f, 0f, 0f), true);
+    Expanded_Clothes.API.CoatRack("MODID", new Vector3(0f, 0f, 04f), new Vector3(0f, 0f, 0f), true);
     // create washer
-    Expanded_Clothes.API.Washer("YOURMODID", new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, 0f));
+    Expanded_Clothes.API.Washer("MODID", new Vector3(0f, 0f, 0f), new Vector3(0f, 0f, 0f));
 }
 ```
 
