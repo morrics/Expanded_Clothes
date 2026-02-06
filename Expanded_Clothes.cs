@@ -1,11 +1,10 @@
 ﻿using HowMuchIsLeft;
 using MSCLoader;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Xml.Linq;
 using UnityEngine;
 using UniversalShoppingSystem;
+using static MSCLoader.SettingsButton;
 
 namespace Expanded_Clothes
 {
@@ -15,7 +14,7 @@ namespace Expanded_Clothes
         public override string ID => "Expanded_Clothes";
         public override string Name => "Expanded Clothes";
         public override string Author => "Morri";
-        public override string Version => "0.3.4"; //public 0.3.4
+        public override string Version => "0.3.5"; //public 0.3.5
         public override string Description => "Small tweaks for improved logic clothes (Beta)";
 
         SettingsText text;
@@ -48,6 +47,14 @@ namespace Expanded_Clothes
         public SettingsHeader Locations2;
         public SettingsHeader wash;
         public SettingsHeader uss_install;
+
+        public SettingsText m_uss_text;
+        public SettingsText m_uss_text_2;
+        public SettingsButton m_uss_butt;
+
+        public SettingsText m_hmil_text;
+        public SettingsText m_hmil_text_2;
+        public SettingsButton m_hmil_butt;
 
         private Texture2D jttexture;
         private Texture2D cvtexture;
@@ -108,17 +115,15 @@ namespace Expanded_Clothes
             Settings.AddHeader("Misc", true);
             Logs = Settings.AddCheckBox("Logs", "Logging mod actions during loading", false);
 
-            uss_install = Settings.AddHeader("Mods needed for systems", true);
+            uss_install = Settings.AddHeader("Mods needed for systems", false);
             Settings.AddText("<b>Washing system</b>", TextAlignment.Center);
-            Settings.AddText("Download and put it in your MWC Mod folder under <b><color=yellow>References</color></b>");
-            Settings.AddButton("Universal Shopping System", USS_NEXUS);
-            Settings.AddText("");
-            Settings.AddText("<b>Mod supports (not required for installation)</b>", TextAlignment.Center);
-            Settings.AddText("A mod that displays the contents of some items when you look at them");
-            Settings.AddButton("How Much Is Left", HMIL_NEXUS);
+            m_uss_text = Settings.AddText("Download and put it in your MWC Mod folder under <b><color=yellow>References</color></b>", false);
+            m_uss_butt = Settings.AddButton("Universal Shopping System ON <color=#FFA500>NEXUSMODS.COM</color>", USS_NEXUS, new Color(2f / 255f, 35f / 255f, 60f / 255f), Color.white, (ButtonIcon)1, false);
+            m_uss_text_2 = Settings.AddText("", false);
 
-            Settings.AddHeader("GitHub source (Wiki)", true);
-            Settings.AddButton("Expanded Clothes repo", GITHUB_REPO);
+            m_hmil_text = Settings.AddText("<b>Mod supports (not required for installation)</b>", TextAlignment.Center, false);
+            m_hmil_text_2 = Settings.AddText("A mod that displays the contents of some items when you look at them", false);
+            m_hmil_butt = Settings.AddButton("How Much Is Left ON <color=#FFA500>NEXUSMODS.COM</color>", HMIL_NEXUS, new Color(2f / 255f, 35f / 255f, 60f / 255f), Color.white, (ButtonIcon)1, false);
 
             Settings.AddHeader("Credits");
             Settings.AddText("<b>Huge thanks</b>", TextAlignment.Center);
@@ -131,13 +136,39 @@ namespace Expanded_Clothes
             Settings.AddText("<b><color=yellow>Universal Shopping System</color></b> by <b><color=teal>honeycomb936</color></b>");
             Settings.AddText("<b><color=yellow>HowMuchIsLeft</color></b> by <b><color=teal>casper-3</color></b>");
             Settings.AddText("<b>Script from GitHub, from <color=yellow>HowMuchIsLeft</color></b>: for cloth status <i>(ItemContentDescription.cs)</i>");
+            Settings.AddText("");
+            Settings.AddText("<b>GitHub repository (Source code + WIKI)</b>", TextAlignment.Center);
+            Settings.AddButton("SHOW ON <color=#FFA500>GITHUB.COM</color>", GITHUB_REPO, Color.black, Color.white, (ButtonIcon)2);
         }
         private void wash_visible() => wash.SetVisibility(DirtyСlothes.GetValue());
         private void s_locs_vis() => Locations.SetVisibility(Shelfs.GetValue());
         private void r_locs_vis() => Locations2.SetVisibility(Racks.GetValue());
-        private void USS_NEXUS() => Process.Start("https://www.nexusmods.com/mywintercar/mods/796");
-        private void HMIL_NEXUS() => Process.Start("https://www.nexusmods.com/mywintercar/mods/724");
-        private void GITHUB_REPO() => Process.Start("https://github.com/morrics/Expanded_Clothes");
+        private void USS_NEXUS() => Application.OpenURL("https://www.nexusmods.com/mywintercar/mods/796");
+        private void HMIL_NEXUS() => Application.OpenURL("https://www.nexusmods.com/mywintercar/mods/724");
+        private void GITHUB_REPO() => Application.OpenURL("https://github.com/morrics/Expanded_Clothes");
+
+        private void MODS_CHECK()
+        {
+            if (USS && ModLoader.IsModPresent("HowMuchIsLeft"))
+            {
+                uss_install.SetVisibility(false);
+            }
+            else
+            {
+                if (!USS)
+                {
+                    m_uss_text.SetVisibility(true);
+                    m_uss_text_2.SetVisibility(true);
+                    m_uss_butt.SetVisibility(true);
+                }
+                if (!ModLoader.IsModPresent("HowMuchIsLeft"))
+                {
+                    m_hmil_text.SetVisibility(true);
+                    m_hmil_text_2.SetVisibility(true);
+                    m_hmil_butt.SetVisibility(true);
+                }
+            }
+        }
 
         private void Mod_OnMenu()
         {
@@ -149,6 +180,7 @@ namespace Expanded_Clothes
                 DirtyСlothes.SetVisibility(true);
                 wash_visible();
             }
+            MODS_CHECK();
         }
         private void Mod_PreLoad()
         {
