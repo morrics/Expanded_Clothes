@@ -32,7 +32,8 @@ private void Mod_OnLoad()
 {
       if (ModLoader.IsModPresent("Expanded_Clothes"))
       {
-            // Use handlers so that if the player has not installed the mod, no errors appear in the console (DO NOT MAKE YOUR MOD DEPENDENT ON MINE IF IT IS NOT NECESSARY)
+            // Use handlers so that if the player has not installed the mod, no errors appear in the console
+            // DO NOT MAKE YOUR MOD DEPENDENT ON MINE IF IT IS NOT NECESSARY
             EX_Load();
       }
 }
