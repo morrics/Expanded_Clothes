@@ -3,6 +3,7 @@ using MSCLoader;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Xml.Linq;
 using UnityEngine;
 using UniversalShoppingSystem;
 
@@ -14,7 +15,7 @@ namespace Expanded_Clothes
         public override string ID => "Expanded_Clothes";
         public override string Name => "Expanded Clothes";
         public override string Author => "Morri";
-        public override string Version => "0.3.3"; //public 0.3.3
+        public override string Version => "0.3.4"; //public 0.3.4
         public override string Description => "Small tweaks for improved logic clothes (Beta)";
 
         SettingsText text;
@@ -24,8 +25,6 @@ namespace Expanded_Clothes
         public SettingsCheckBox Racks;
         public SettingsCheckBox ClothesHands;
         public SettingsCheckBox DirtyСlothes;
-
-        
 
         public static SettingsCheckBox Logs;
         public static Expanded_Clothes Instance;
@@ -414,6 +413,9 @@ namespace Expanded_Clothes
             psell.GetComponent<ItemShop>().SaveShop(Instance);
             Save();
             SaveAllWashers();
+            var dirty = GameObject.Find("PLAYER").GetComponent<Dirty>();
+            SaveLoad.WriteValue(Instance, $"EC_jacket_dirty", dirty.JacketDirty);
+            SaveLoad.WriteValue(Instance, $"EC_coverall_dirty", dirty.CoverallDirty);
         }
 
         private void ActivateItems()

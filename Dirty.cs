@@ -1,4 +1,5 @@
 using HutongGames.PlayMaker;
+using MSCLoader;
 using System.Collections;
 using UnityEngine;
 
@@ -42,6 +43,12 @@ namespace Expanded_Clothes
 
             bodyTempFsm = GameObject.Find("PLAYER/BodyTemp").GetComponent<PlayMakerFSM>();
             bodyheatAdd = bodyTempFsm.FsmVariables.GetFsmFloat("BodyheatAdd");
+
+            if (SaveLoad.ValueExists(Expanded_Clothes.Instance, "EC_jacket_dirty"))
+            {
+                JacketDirty = SaveLoad.ReadValue<float>(Expanded_Clothes.Instance, $"EC_jacket_dirty");
+                CoverallDirty = SaveLoad.ReadValue<float>(Expanded_Clothes.Instance, $"EC_coverall_dirty");
+            }    
 
             StartCoroutine(DirtyPlayerTick());
         }
