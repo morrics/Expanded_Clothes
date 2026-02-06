@@ -6,19 +6,13 @@ using UnityEngine;
 
 namespace Expanded_Clothes
 {
-    public class StateDirty
+    public class StateDirty : MonoBehaviour
     {
         static GameObject state;
         static TextMesh foregroundText;
         static TextMesh shadowText;
 
-
-        static StateDirty()
-        {
-            CreateContentDescription();
-        }
-
-        static void CreateContentDescription()
+        private void Start()
         {
             GameObject partName = GameObject.Find("GUI/Indicators/Partname");
 
@@ -37,13 +31,13 @@ namespace Expanded_Clothes
             shadowText.characterSize = 0.05f;
         }
 
-        public static void SetText(string text)
+        public void SetText(string text)
         {
             foregroundText.text = text;
             shadowText.text = text;
         }
 
-        public static void ClearText()
+        public void ClearText()
         {
             foregroundText.text = "";
             shadowText.text = "";

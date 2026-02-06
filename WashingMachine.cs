@@ -195,21 +195,6 @@ namespace Expanded_Clothes
 
             GameObject hitObj = hit.collider.gameObject;
 
-            if (hitObj == ClothesManager.Instance.jacketItem)
-            {
-                StateDirty.SetText(dirty.infoJacket);
-                return;
-            }
-            else if (hitObj == ClothesManager.Instance.coverallItem)
-            {
-                StateDirty.SetText(dirty.infoCoverall);
-                return;
-            }
-            else
-            {
-                StateDirty.ClearText();
-            }
-
             if (hitObj.transform.IsChildOf(doorMesh.transform))
             {
                 if (isRunning || waitingDrumToStop) return;

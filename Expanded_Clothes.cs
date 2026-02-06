@@ -14,11 +14,10 @@ namespace Expanded_Clothes
         public override string ID => "Expanded_Clothes";
         public override string Name => "Expanded Clothes";
         public override string Author => "Morri";
-        public override string Version => "0.3.5"; //public 0.3.5
-        public override string Description => "Small tweaks for improved logic clothes (Beta)";
+        public override string Version => "0.3.6"; //public 0.3.6
+        public override string Description => "Small tweaks for improved logic clothes (early access)";
 
-        SettingsText text;
-        SettingsButton button;
+        public SettingsHeader reset;
 
         public SettingsCheckBox Shelfs;
         public SettingsCheckBox Racks;
@@ -65,8 +64,13 @@ namespace Expanded_Clothes
         public static GameObject Shelf;
         public static GameObject CoatRack;
 
+        private Dirty dirty;
+        private StateDirty statedirty;
+
         private bool NewGame;
         private bool USS;
+
+        public bool Loaded;
 
         private bool W1;
         private bool W2;
@@ -80,6 +84,7 @@ namespace Expanded_Clothes
             SetupFunction(Setup.OnSave, Mod_OnSave);
             SetupFunction(Setup.OnNewGame, Mod_OnNewGame);
             SetupFunction(Setup.ModSettings, Mod_Settings);
+            SetupFunction(Setup.Update, Mod_Update);
         }
         private void Mod_Settings()
         {
@@ -88,8 +93,10 @@ namespace Expanded_Clothes
             Racks = Settings.AddCheckBox("Racks", "Racks for coat", true, r_locs_vis);
             DirtyСlothes = Settings.AddCheckBox("DirtyСlothes", "Clothes can get dirty, washing system (returns dirtiness)", true, wash_visible, false);
             ClothesHands = Settings.AddCheckBox("ClothesHands", "Clothes on hands", true);
-            text = Settings.AddText("This button remove save, and reset clothes position", false);
-            button = Settings.AddButton("Reset clothes", ActivateItems, false);
+
+            reset = Settings.AddHeader("Reset tool", true, false);
+            Settings.AddText("This button remove save, and reset clothes position");
+            Settings.AddButton("Reset clothes", ActivateItems, (ButtonIcon)13);
 
             Locations = Settings.AddHeader("Shelfs", true, false);
             Settings.AddText("When disabling locations, ensure that they do not contain any clothing, otherwise you will have to reset it");
@@ -108,7 +115,7 @@ namespace Expanded_Clothes
             rCABIN = Settings.AddCheckBox("rCABIN", "Clothes rack in cabin (ventti)", true);
 
             wash = Settings.AddHeader("Washers", true, false);
-            text = Settings.AddText("When disabling locations, ensure that they do not contain any clothing, otherwise you will have to reset it");
+            Settings.AddText("When disabling locations, ensure that they do not contain any clothing, otherwise you will have to reset it");
             wAPART = Settings.AddCheckBox("wAPART", "Washer in apartment", true);
             wHOUSE = Settings.AddCheckBox("wHOUSE", "Washer in parrent house", true);
 
@@ -181,6 +188,7 @@ namespace Expanded_Clothes
                 wash_visible();
             }
             MODS_CHECK();
+            Loaded = false;
         }
         private void Mod_PreLoad()
         {
@@ -210,8 +218,34 @@ namespace Expanded_Clothes
             }
 
             ab.Unload(false);
-            text.SetVisibility(true);
-            button.SetVisibility(true);
+            reset.SetVisibility(true);
+        }
+
+        private void Mod_Update()
+        {
+            if (Loaded && DirtyСlothes.GetValue() && USS)
+            {
+                var raycastHit = UnifiedRaycast.GetRaycastHit();
+
+                if (raycastHit.collider == null || raycastHit.transform.gameObject.layer != 19)
+                {
+                    statedirty.ClearText();
+                    return;
+                }
+
+                GameObject item = raycastHit.transform.gameObject;
+
+                if (item == ClothesManager.Instance.jacketItem)
+                {
+                    statedirty.SetText(dirty.infoJacket);
+                    return;
+                }
+                if (item == ClothesManager.Instance.coverallItem)
+                {
+                    statedirty.SetText(dirty.infoCoverall);
+                    return;
+                }
+            }
         }
 
         public void Load_Location()
@@ -388,14 +422,16 @@ namespace Expanded_Clothes
             if (ModLoader.IsModPresent("HowMuchIsLeft") && DirtyСlothes.GetValue())
             {
                 HMILAPI();
-            }    
+            }
+            Loaded = true;
         }
         private void USSAPI()
         {
-            new StateDirty();
             psell.GetComponent<ItemShop>().LoadShop(Instance);
             if (NewGame != true)
                 Load();
+            dirty = GameObject.Find("PLAYER").GetComponent<Dirty>();
+            statedirty = GameObject.Find("GUI").AddComponent<StateDirty>();
         }
         private void HMILAPI()
         {
@@ -431,8 +467,7 @@ namespace Expanded_Clothes
         public void Mod_OnSave()
         {
             ClothesManager.Instance.Save();
-            text.SetVisibility(false);
-            button.SetVisibility(false);
+            reset.SetVisibility(false);
 
             if (ModLoader.IsReferencePresent("UniversalShoppingSystem") && DirtyСlothes.GetValue())
             {
