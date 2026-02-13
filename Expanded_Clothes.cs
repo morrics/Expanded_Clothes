@@ -14,7 +14,7 @@ namespace Expanded_Clothes
         public override string ID => "Expanded_Clothes";
         public override string Name => "Expanded Clothes";
         public override string Author => "Morri";
-        public override string Version => "0.3.6"; //public 0.3.6
+        public override string Version => "0.3.7"; //public 0.3.7
         public override string Description => "Small tweaks for improved logic clothes (early access)";
 
         public SettingsHeader reset;
@@ -335,7 +335,7 @@ namespace Expanded_Clothes
             GameObject.Find("JOBS").AddComponent<Futufon>();
             if (ClothesHands.GetValue() != false)
                 GameObject.Find("PLAYER").AddComponent<NewHands>();
-            if (DirtyСlothes.GetValue() != false)
+            if (DirtyСlothes.GetValue() && USS)
                 GameObject.Find("PLAYER").AddComponent<Dirty>();
             Load_Location();
             
@@ -351,7 +351,9 @@ namespace Expanded_Clothes
         public void Save()
         {
             var shop = psell.GetComponent<ItemShop>();
-            if (shop == null || shop.BoughtItems == null) return;
+            if (shop == null) return;
+            if (shop.BoughtItems == null || shop.BoughtItems.Count == 0) return;
+            if (!USS || !DirtyСlothes.GetValue()) return;
 
             var grams = new List<int>(shop.BoughtItems.Count);
 
@@ -367,8 +369,8 @@ namespace Expanded_Clothes
                 var p = go.GetComponent<Powder>();
                 grams.Add(p != null ? p.gram : 0);
             }
-            if (USS && DirtyСlothes.GetValue())
-                SaveLoad.WriteValue(Instance, "pow_grams", grams);
+
+            SaveLoad.WriteValue(Instance, "pow_grams", grams);
         }
 
 
