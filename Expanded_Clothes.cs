@@ -14,7 +14,7 @@ namespace Expanded_Clothes
         public override string ID => "Expanded_Clothes";
         public override string Name => "Expanded Clothes";
         public override string Author => "Morri";
-        public override string Version => "0.3.7"; //public 0.3.7
+        public override string Version => "0.3.8"; //public 0.3.8
         public override string Description => "Small tweaks for improved logic clothes (early access)";
 
         public SettingsHeader reset;
@@ -74,6 +74,8 @@ namespace Expanded_Clothes
 
         private bool W1;
         private bool W2;
+
+        private bool houseBurnt;
 
         public override void ModSetup()
         {
@@ -247,6 +249,14 @@ namespace Expanded_Clothes
                 }
             }
         }
+        public void CheckHouseBurnt()
+        {
+            Transform transform = GameObject.Find("YARD/Building/HOUSEFIRE").transform;
+            if (((Component)transform.Find("Kitchen/1")).gameObject.activeSelf || ((Component)transform.Find("Livingroom/1")).gameObject.activeSelf || ((Component)transform.Find("Bedroom1/1")).gameObject.activeSelf || ((Component)transform.Find("Bedroom2/1")).gameObject.activeSelf)
+                houseBurnt = true;
+            else
+                houseBurnt = false;
+        }
 
         public void Load_Location()
         {
@@ -254,8 +264,14 @@ namespace Expanded_Clothes
             {
                 if (sHouse.GetValue())
                 {
-                    API.Shelf("House", new Vector3(-10.94f, 1.359f, 10.666f), new Vector3(270f, 180f, 0f));
-                    GameObject.Find("YARD/Building/LIVINGROOM/hat_shelf").SetActive(false);
+                    CheckHouseBurnt();
+                    if (houseBurnt)
+                        ModConsole.Print("<b><color=teal>[Expanded Clothes]</color></b>: House shelf disabled, house is burnt");
+                    else
+                    {
+                        API.Shelf("House", new Vector3(-10.94f, 1.359f, 10.666f), new Vector3(270f, 180f, 0f));
+                        GameObject.Find("YARD/Building/LIVINGROOM/hat_shelf").SetActive(false);
+                    }
                 }
 
                 if (sAparment.GetValue())

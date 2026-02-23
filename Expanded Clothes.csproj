@@ -19,18 +19,20 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\My Winter Car\Mods\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\My Winter Car\Mods\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\My Winter Car\Mods\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\Program Files %28x86%29\Steam\steamapps\common\My Winter Car\Mods\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Mini|AnyCPU'">
     <OutputPath>D:\MSC Mods\Mods\Mods\Assets\MOD DLLS\</OutputPath>
@@ -39,10 +41,11 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>13</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\My Winter Car\mywintercar_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\My Winter Car\mywintercar_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HowMuchIsLeft, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -51,7 +54,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="PlayMaker">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\My Winter Car\mywintercar_Data\Managed\PlayMaker.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\My Winter Car\mywintercar_Data\Managed\PlayMaker.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -69,7 +72,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UniversalShoppingSystem">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\My Winter Car\Mods\References\UniversalShoppingSystem.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\My Winter Car\Mods\References\UniversalShoppingSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

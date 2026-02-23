@@ -4,6 +4,6 @@ namespace Expanded_Clothes
 {
     internal class Powder : MonoBehaviour
     {
-        public int gram = 400;
+        public int gram = 1500;
     }
 }

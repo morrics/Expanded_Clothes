@@ -33,6 +33,9 @@ namespace Expanded_Clothes
             hud.gameObject.SetActive(true);
             hud.localPosition = new Vector3(-11.5f, 6f, 0f);
 
+            var jail = GameObject.Find("GUI/HUD").transform.GetChild(12);
+            jail.localPosition = new Vector3(-11.5f, 5.6f, 0f);
+
             PLAYER = GameObject.Find("PLAYER");
 
             playerDirtness = FsmVariables.GlobalVariables.GetFsmFloat("PlayerDirtiness");
