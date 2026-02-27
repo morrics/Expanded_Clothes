@@ -77,10 +77,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuildInfo.cs" />
     <Compile Include="ClothesManager.cs" />
     <Compile Include="ClothesShelf.cs" />
     <Compile Include="Dirty.cs" />
     <Compile Include="Expanded_Clothes.cs" />
+    <Compile Include="GifuPoop.cs" />
+    <Compile Include="GitCommit.AssemblyInfo.cs" />
     <Compile Include="HatRack.cs" />
     <Compile Include="HouseElec.cs" />
     <Compile Include="NewHands.cs" />
@@ -99,5 +102,13 @@
     <ABFOLDER>NONE</ABFOLDER>
     <PostBuildEvent>
     </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>setlocal
+cd /d "$(ProjectDir)"
+for /f %25%25i in ('git rev-parse --short HEAD') do set GIT_HASH=%25%25i
+if "%25GIT_HASH%25"=="" set GIT_HASH=UNKNOWN
+&gt; "$(ProjectDir)GitCommit.AssemblyInfo.cs" echo [assembly: System.Reflection.AssemblyInformationalVersionAttribute("%25GIT_HASH%25")]
+endlocal</PreBuildEvent>
   </PropertyGroup>
 </Project>

@@ -10,12 +10,18 @@ namespace Expanded_Clothes
 {
     public class Expanded_Clothes : Mod
     {
+        public string Commit => BuildInfo.Commit;
+
         public override Game SupportedGames => Game.MyWinterCar;
         public override string ID => "Expanded_Clothes";
         public override string Name => "Expanded Clothes";
         public override string Author => "Morri";
-        public override string Version => "0.3.8"; //public 0.3.8
-        public override string Description => "Small tweaks for improved logic clothes (early access)";
+        public override string Version => "0.3.9"; //public 0.3.9
+        public override string Description =>
+            "Small tweaks for improved logic clothes (early access)"
+            + "\n\n"
+            + "GitHub information"
+            + $"\nBuild (commit): <color=cyan>{Commit}</color>";
 
         public SettingsHeader reset;
 
@@ -140,13 +146,14 @@ namespace Expanded_Clothes
             Settings.AddText("<b><color=teal>DUBOVYK</color></b>: high-quality hand textures");
             Settings.AddText("<b><color=brown>traxr</color></b>: high-quality clothes");
             Settings.AddText("<b><color=orange>cinnerax</color></b>: high-quality 3d-models");
+            Settings.AddText("<b><color=cyan>Talia Kuznetsova</color></b>: Help with code (GifuPoop script)");
             Settings.AddText("");
             Settings.AddText("<b>Resources used</b>", TextAlignment.Center);
             Settings.AddText("<b><color=yellow>Universal Shopping System</color></b> by <b><color=teal>honeycomb936</color></b>");
             Settings.AddText("<b><color=yellow>HowMuchIsLeft</color></b> by <b><color=teal>casper-3</color></b>");
             Settings.AddText("<b>Script from GitHub, from <color=yellow>HowMuchIsLeft</color></b>: for cloth status <i>(ItemContentDescription.cs)</i>");
             Settings.AddText("");
-            Settings.AddText("<b>GitHub repository (Source code + WIKI)</b>", TextAlignment.Center);
+            Settings.AddText("<b>GitHub repository (Source code + WIKI WITH API FOR MODDERS)</b>", TextAlignment.Center);
             Settings.AddButton("SHOW ON <color=#FFA500>GITHUB.COM</color>", GITHUB_REPO, Color.black, Color.white, (ButtonIcon)2);
         }
         private void wash_visible() => wash.SetVisibility(DirtyСlothes.GetValue());
@@ -440,6 +447,14 @@ namespace Expanded_Clothes
             if (ModLoader.IsModPresent("HowMuchIsLeft") && DirtyСlothes.GetValue())
             {
                 HMILAPI();
+            }
+
+            if (ModLoader.IsModPresent("psk_extended") && DirtyСlothes.GetValue())
+            {
+                AssetBundle ab = LoadAssets.LoadBundle("Expanded_Clothes.Assets.exclothes.unity3d");
+                var products = GameObject.Find("products(Clone)");
+                products.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", ab.LoadAsset<Texture2D>("ATLAS_EX_PRODUCTS.png"));
+                ab.Unload(false);
             }
             Loaded = true;
         }

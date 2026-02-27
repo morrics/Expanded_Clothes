@@ -14,8 +14,8 @@ namespace Expanded_Clothes
         public float JacketDirty;
         public float CoverallDirty;
 
-        private FsmFloat playerDirtness;
-        private FsmInt clothingType;
+        public FsmFloat playerDirtness;
+        public FsmInt clothingType;
 
         private FsmFloat playerSweat;
 
@@ -54,6 +54,16 @@ namespace Expanded_Clothes
             }    
 
             StartCoroutine(DirtyPlayerTick());
+
+            var Gifu = GameObject.Find("GIFU(750/450psi)");
+            var GifuPoopTrigger = new GameObject("GifuPoopTrigger");
+            BoxCollider col = GifuPoopTrigger.AddComponent<BoxCollider>();
+            col.isTrigger = true;
+            GifuPoopTrigger.transform.SetParent(Gifu.transform.Find("LOD"));
+            GifuPoopTrigger.transform.localPosition = new Vector3(-0.09006908f, 0.6110867f, -5.554031f);
+            GifuPoopTrigger.transform.localEulerAngles = new Vector3(0f, 90f, 0f);
+            GifuPoopTrigger.transform.localScale = new Vector3(2f, 1.5f, 1.6f);
+            GifuPoopTrigger.AddComponent<GifuPoop>();
         }
 
         private void Update()
