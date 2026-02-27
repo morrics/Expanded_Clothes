@@ -146,7 +146,7 @@ namespace Expanded_Clothes
             Settings.AddText("<b><color=teal>DUBOVYK</color></b>: high-quality hand textures");
             Settings.AddText("<b><color=brown>traxr</color></b>: high-quality clothes");
             Settings.AddText("<b><color=orange>cinnerax</color></b>: high-quality 3d-models");
-            Settings.AddText("<b><color=cyan>Talia Kuznetsova</color></b>: Help with code (GifuPoop script)");
+            Settings.AddText("<b><color=cyan>Talia Kuznetsova</color></b>: help with code (GifuPoop script)");
             Settings.AddText("");
             Settings.AddText("<b>Resources used</b>", TextAlignment.Center);
             Settings.AddText("<b><color=yellow>Universal Shopping System</color></b> by <b><color=teal>honeycomb936</color></b>");
