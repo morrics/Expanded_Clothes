@@ -64,5 +64,7 @@ API.Register see in [Futufon.cs](Futufon.cs)
 
 <b>cinnerax</b>: high-quality 3d-models
 
+<b>Talia Kuznetsova</b>: Help with code (GifuPoop script)
+
 ## Resources used
 <b>Script from HowMuchIsLeft</b>: for cloth status <i>[ItemContentDescription.cs](https://github.com/thurbridi/MSC-HowMuchIsLeft/blob/master/HowMuchIsLeft/ItemContentDescription.cs)</i> used in [StateDirty.cs](Open%20Source/StateDirty.cs)
