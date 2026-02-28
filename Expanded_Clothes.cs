@@ -16,7 +16,7 @@ namespace Expanded_Clothes
         public override string ID => "Expanded_Clothes";
         public override string Name => "Expanded Clothes";
         public override string Author => "Morri";
-        public override string Version => "0.3.9.1"; //public 0.3.9.1
+        public override string Version => "0.3.9"; //public 0.3.9
         public override string Description =>
             "Small tweaks for improved logic clothes (early access)"
             + "\n\n"
@@ -352,8 +352,8 @@ namespace Expanded_Clothes
             {
                 AssetBundle ab = LoadAssets.LoadBundle("Expanded_Clothes.Assets.exclothes.unity3d");
                 psell = GameObject.Instantiate(ab.LoadAsset<GameObject>("powdersell.prefab"));
-                psell.transform.position = new Vector3(-1739.5f, 4.79f, 922.5587f);
-                psell.transform.eulerAngles = new Vector3(0f, 270f, 0f);
+                // psell.transform.position = new Vector3(-1739.5f, 4.79f, 922.5587f);
+                // psell.transform.eulerAngles = new Vector3(0f, 270f, 0f);
                 ab.Unload(false);
             }
 

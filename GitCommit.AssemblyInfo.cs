@@ -1,1 +1,1 @@
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("cc14a7f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("7779439")]
