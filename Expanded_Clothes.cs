@@ -16,7 +16,7 @@ namespace Expanded_Clothes
         public override string ID => "Expanded_Clothes";
         public override string Name => "Expanded Clothes";
         public override string Author => "Morri";
-        public override string Version => "0.3.9"; //public 0.3.9
+        public override string Version => "0.3.9.1"; //public 0.3.9
         public override string Description =>
             "Small tweaks for improved logic clothes (early access)"
             + "\n\n"
@@ -449,14 +449,6 @@ namespace Expanded_Clothes
             if (ModLoader.IsModPresent("HowMuchIsLeft") && DirtyСlothes.GetValue())
             {
                 HMILAPI();
-            }
-
-            if (ModLoader.IsModPresent("psk_extended") && DirtyСlothes.GetValue())
-            {
-                AssetBundle ab = LoadAssets.LoadBundle("Expanded_Clothes.Assets.exclothes.unity3d");
-                var products = GameObject.Find("products(Clone)");
-                products.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", ab.LoadAsset<Texture2D>("ATLAS_EX_PRODUCTS.png"));
-                ab.Unload(false);
             }
             Loaded = true;
         }

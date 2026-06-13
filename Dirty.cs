@@ -8,6 +8,7 @@ namespace Expanded_Clothes
     internal class Dirty : MonoBehaviour
     {
         private const float MaxDirtness = 100f;
+
         private const float SecondsToDirtyFromClothes = 30f * 60f;
         private const float SecondsToDirtyClothesFromPlayer = 30f * 60f;
 

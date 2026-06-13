@@ -14,31 +14,35 @@ namespace Expanded_Clothes
         private FsmString interact;
         private FsmBool guiuse;
         private FsmBool guiassemble;
+
         private bool isInitialized = false;
 
         private bool jacketSynced = false;
         private bool coverallSynced = false;
 
-        private bool canAssembleJacket = false;
-        private bool canAssembleCoverall = false;
-        private Coroutine resetCoroutine;
-
         private Transform itemPivot;
         private Camera mainCam;
+        private PlayMakerFSM hand;
 
         public bool canass = true;
+
+        private Coroutine hangCoroutine;
 
         public void Init(string shelfID, GameObject vJacket, GameObject vCoverall)
         {
             SetupGUI();
-            this.ShelfID = shelfID;
-            this.visualJacket = vJacket;
-            this.visualCoverall = vCoverall;
 
-            GameObject pivotObj = GameObject.Find("PLAYER/Pivot/AnimPivot/Camera/FPSCamera/1Hand_Assemble/ItemPivot");
-            itemPivot = pivotObj.transform;
+            ShelfID = shelfID;
+            visualJacket = vJacket;
+            visualCoverall = vCoverall;
 
-            this.isInitialized = true;
+            var pivotObj = GameObject.Find("PLAYER/Pivot/AnimPivot/Camera/FPSCamera/1Hand_Assemble/ItemPivot");
+            itemPivot = pivotObj != null ? pivotObj.transform : null;
+
+            var handObj = GameObject.Find("PLAYER/Pivot/AnimPivot/Camera/FPSCamera/1Hand_Assemble/Hand");
+            hand = handObj != null ? handObj.GetComponent<PlayMakerFSM>() : null;
+
+            isInitialized = true;
         }
 
         private void SetupGUI()
@@ -47,21 +51,17 @@ namespace Expanded_Clothes
             interact = globals.GetFsmString("GUIinteraction");
             guiuse = globals.GetFsmBool("GUIuse");
             guiassemble = globals.GetFsmBool("GUIassemble");
-            mainCam = FsmVariables.GlobalVariables.FindFsmGameObject("POV").Value.GetComponent<Camera>();
+
+            var pov = FsmVariables.GlobalVariables.FindFsmGameObject("POV").Value;
+            mainCam = pov != null ? pov.GetComponent<Camera>() : null;
         }
 
         private void Update()
         {
-            if (!isInitialized || ClothesManager.Instance == null) return;
+            if (!isInitialized || ClothesManager.Instance == null || mainCam == null || itemPivot == null) return;
 
             SyncItem(ClothesKind.Jacket, ref jacketSynced, visualJacket);
             SyncItem(ClothesKind.Coverall, ref coverallSynced, visualCoverall);
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (canAssembleJacket) { PrepareAndAssemble(ClothesKind.Jacket); return; }
-                if (canAssembleCoverall) { PrepareAndAssemble(ClothesKind.Coverall); return; }
-            }
 
             Ray ray = mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
 
@@ -80,97 +80,103 @@ namespace Expanded_Clothes
                     return;
                 }
 
-                GameObject shelfModel = transform.gameObject;
+                GameObject shelfModel = gameObject;
                 if (hitObj == shelfModel || hitObj.transform.IsChildOf(shelfModel.transform))
                 {
                     if (canass)
-                        CheckHandAndPrepare();
+                        HandleAutoHang();
                     return;
                 }
-
-            }
-
-            if ((canAssembleJacket || canAssembleCoverall))
-            {
-                resetCoroutine = StartCoroutine(ResetFlagsDelayed());
             }
         }
 
-        private void CheckHandAndPrepare()
+        private void HandleAutoHang()
         {
-            GameObject inHand = itemPivot.GetChild(0).gameObject;
-
-            bool isJacket = inHand.name.Contains("winter jacket");
-            bool isCoverall = inHand.name.Contains("winter coverall");
-
-            if (!isJacket && !isCoverall) return;
-
-            if (isJacket && !ClothesManager.Instance.IsItemOnShelf(ShelfID, ClothesKind.Jacket))
+            if (!TryGetClothesInHand(out ClothesKind kind, out GameObject inHand))
             {
-                canAssembleJacket = true;
-                canAssembleCoverall = false;
-            }
-            else if (isCoverall && !ClothesManager.Instance.IsItemOnShelf(ShelfID, ClothesKind.Coverall))
-            {
-                canAssembleCoverall = true;
-                canAssembleJacket = false;
+                ResetUI();
+                return;
             }
 
-            if (resetCoroutine != null) 
-            { 
-                StopCoroutine(resetCoroutine); 
-                resetCoroutine = null; 
-            }
+            hangCoroutine = StartCoroutine(HangDelayed(kind, inHand));
 
-            guiassemble.Value = true;
-            guiuse.Value = false;
-            interact.Value = "ASSEMBLE CLOTHES";
+            if (hand != null)
+                hand.Fsm.Event(FsmEvent.FindEvent("PROCEED Drop"));
         }
 
-        private void PrepareAndAssemble(ClothesKind kind)
+        private IEnumerator HangDelayed(ClothesKind kind, GameObject inHand)
         {
-            GameObject physItem = (kind == ClothesKind.Jacket)
-                ? ClothesManager.Instance.jacketItem
-                : ClothesManager.Instance.coverallItem;
+            float start = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup - start < 0.1f)
+                yield return null;
 
-            if (itemPivot.childCount > 0)
+            if (!canass || ClothesManager.Instance == null)
             {
-                GameObject item = itemPivot.GetChild(0).gameObject;
-                ClothesManager.Instance.DisablePhysicalItem(item);
+                hangCoroutine = null;
+                yield break;
             }
 
-
-            if (physItem != null)
+            if (ClothesManager.Instance.IsItemOnShelf(ShelfID, kind))
             {
-                Assemble(physItem, kind);
+                hangCoroutine = null;
+                yield break;
             }
 
-            canAssembleJacket = false;
-            canAssembleCoverall = false;
+            if (inHand != null)
+                ClothesManager.Instance.DisablePhysicalItem(inHand);
+
+            Assemble(kind);
+
+            hangCoroutine = null;
         }
 
-        private IEnumerator ResetFlagsDelayed()
+        private bool TryGetClothesInHand(out ClothesKind kind, out GameObject inHand)
         {
-            ResetUI();
-            yield return new WaitForSeconds(0.1f);
-            canAssembleJacket = false;
-            canAssembleCoverall = false;
-            resetCoroutine = null;
+            kind = default;
+            inHand = null;
+
+            if (itemPivot == null || itemPivot.childCount == 0)
+                return false;
+
+            inHand = itemPivot.GetChild(0).gameObject;
+            if (inHand == null) return false;
+
+            string n = inHand.name.ToLowerInvariant();
+
+            if (n.Contains("winter jacket"))
+            {
+                kind = ClothesKind.Jacket;
+                return true;
+            }
+
+            if (n.Contains("winter coverall"))
+            {
+                kind = ClothesKind.Coverall;
+                return true;
+            }
+
+            return false;
         }
 
         private void SyncItem(ClothesKind kind, ref bool syncedFlag, GameObject visualObj)
         {
             bool shouldBeOnShelf = ClothesManager.Instance.IsItemOnShelf(ShelfID, kind);
+
             if (!shouldBeOnShelf)
             {
                 if (visualObj && visualObj.activeSelf) visualObj.SetActive(false);
                 syncedFlag = false;
                 return;
             }
-            if (shouldBeOnShelf && !syncedFlag)
+
+            if (!syncedFlag)
             {
                 if (visualObj && !visualObj.activeSelf) visualObj.SetActive(true);
-                GameObject physItem = (kind == ClothesKind.Jacket) ? ClothesManager.Instance.jacketItem : ClothesManager.Instance.coverallItem;
+
+                GameObject physItem = (kind == ClothesKind.Jacket)
+                    ? ClothesManager.Instance.jacketItem
+                    : ClothesManager.Instance.coverallItem;
+
                 if (physItem != null)
                 {
                     ClothesManager.Instance.DisablePhysicalItem(physItem);
@@ -179,15 +185,31 @@ namespace Expanded_Clothes
             }
         }
 
-        private void Assemble(GameObject physicalItem, ClothesKind kind)
+        private void Assemble(ClothesKind kind)
         {
-            ClothesManager.Instance.DisablePhysicalItem(physicalItem);
+            GameObject physicalItem = (kind == ClothesKind.Jacket)
+                ? ClothesManager.Instance.jacketItem
+                : ClothesManager.Instance.coverallItem;
+
+            if (physicalItem != null)
+                ClothesManager.Instance.DisablePhysicalItem(physicalItem);
+
             ClothesManager.Instance.SetItemLocation(ShelfID, kind);
 
-            if (kind == ClothesKind.Jacket) { jacketSynced = true; if (visualJacket) visualJacket.SetActive(true); }
-            if (kind == ClothesKind.Coverall) { coverallSynced = true; if (visualCoverall) visualCoverall.SetActive(true); }
+            if (kind == ClothesKind.Jacket)
+            {
+                jacketSynced = true;
+                if (visualJacket) visualJacket.SetActive(true);
+            }
+            else
+            {
+                coverallSynced = true;
+                if (visualCoverall) visualCoverall.SetActive(true);
+            }
 
-            MasterAudio.PlaySound3DAndForget("PlayerMisc", transform, false, 1f, null, 0f, "clothing" + Random.Range(1, 3));
+            MasterAudio.PlaySound3DAndForget("PlayerMisc", transform, false, 1f, null, 0f,
+                "clothing" + Random.Range(1, 3));
+
             ResetUI();
         }
 
@@ -195,20 +217,36 @@ namespace Expanded_Clothes
         {
             ClothesManager.Instance.SetItemLocation("None", kind);
 
-            if (kind == ClothesKind.Jacket) { jacketSynced = false; if (visualJacket) visualJacket.SetActive(false); }
-            if (kind == ClothesKind.Coverall) { coverallSynced = false; if (visualCoverall) visualCoverall.SetActive(false); }
+            if (kind == ClothesKind.Jacket)
+            {
+                jacketSynced = false;
+                if (visualJacket) visualJacket.SetActive(false);
+            }
+            else
+            {
+                coverallSynced = false;
+                if (visualCoverall) visualCoverall.SetActive(false);
+            }
 
-            GameObject item = (kind == ClothesKind.Jacket) ? ClothesManager.Instance.jacketItem : ClothesManager.Instance.coverallItem;
+            GameObject item = (kind == ClothesKind.Jacket)
+                ? ClothesManager.Instance.jacketItem
+                : ClothesManager.Instance.coverallItem;
+
             ClothesManager.Instance.EnablePhysicalItem(item);
             item.transform.position = mainCam.transform.position + mainCam.transform.forward * 0.3f;
+
             ResetUI();
         }
 
         private void ShowTakeGUI(string text, ClothesKind kind)
         {
             guiuse.Value = true;
+            guiassemble.Value = false;
             interact.Value = text;
-            if (Input.GetMouseButtonDown(0)) TakeFromShelf(kind);
+
+            // take оставил на лкм как было
+            if (Input.GetMouseButtonDown(0))
+                TakeFromShelf(kind);
         }
 
         private void ResetUI()
